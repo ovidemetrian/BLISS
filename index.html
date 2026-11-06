@@ -1,0 +1,619 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="theme-color" content="#07080C">
+<meta name="description" content="BLISS — AI without the box. A phone AI interface concept by Ovi Demetrian.">
+<title>BLISS — AI Without the Box</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@400;500;700&family=Courier+Prime:wght@400;700&display=swap">
+<style>
+:root{--bg:#07080C;--ink:#F4F2EC;--mute:#8D92A1;--blue:#3D7BFF;--yellow:#FFC93C;--red:#FF4D4D;--green:#3FBF6A}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;overflow:hidden;overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit}
+#app{position:relative;width:100%;height:100vh;height:100dvh;min-height:520px;overflow:hidden;background:var(--bg)}
+.hide{display:none!important}
+
+/* animations */
+@keyframes rise{0%{transform:translateY(10px);opacity:0}100%{transform:translateY(0);opacity:1}}
+@keyframes dots{0%,100%{opacity:.25}50%{opacity:1}}
+@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+@keyframes rainbow{0%{stroke:#FF4D4D}33%{stroke:#FFC93C}66%{stroke:#3D7BFF}100%{stroke:#FF4D4D}}
+@keyframes rainbowB{0%{border-color:#FF4D4D}33%{border-color:#FFC93C}66%{border-color:#3D7BFF}100%{border-color:#FF4D4D}}
+@keyframes glowpulse{0%,100%{filter:drop-shadow(0 0 3px rgba(255,201,60,.35))}50%{filter:drop-shadow(0 0 14px rgba(255,201,60,.9))}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes inRight{0%{transform:translateX(100%)}100%{transform:translateX(0)}}
+@keyframes inLeft{0%{transform:translateX(-100%)}100%{transform:translateX(0)}}
+@keyframes rise2{0%{transform:translateY(100%)}100%{transform:translateY(0)}}
+@keyframes tri{0%{background-position:0% 50%}100%{background-position:200% 50%}}
+@keyframes breathe2{0%,100%{transform:scale(.88)}50%{transform:scale(1.08)}}
+@keyframes bar{0%,100%{transform:scaleY(.3)}50%{transform:scaleY(1)}}
+@keyframes carriage{0%{transform:translateX(0)}25%{transform:translateX(-10px)}55%{transform:translateX(6px)}80%{transform:translateX(-2px)}100%{transform:translateX(0)}}
+@keyframes ding{0%{transform:translate(-50%,10px) scale(.6);opacity:0}25%{transform:translate(-50%,0) scale(1.15);opacity:1}70%{opacity:1}100%{transform:translate(-50%,-18px) scale(1);opacity:0}}
+.flow{animation:rainbow 14s linear infinite}
+.idle{stroke:#E9E6DE}
+.talk{animation:rainbow 3s linear infinite;stroke-width:3}
+.pulsing{animation:glowpulse .9s ease-in-out infinite}
+.blueglow{filter:drop-shadow(0 0 8px rgba(61,123,255,.35))}
+.redglow{filter:drop-shadow(0 0 10px rgba(255,77,77,.55))}
+.swap{animation:rise .4s ease-out both}
+.dot{animation:dots 1.2s ease-in-out infinite}
+.caret{animation:blink 1s step-end infinite}
+.turning{animation:spin 3s linear infinite;transform-origin:50% 50%;transform-box:fill-box}
+.fromRight{animation:inRight .35s cubic-bezier(.2,.8,.2,1) both}
+.fromLeft{animation:inLeft .35s cubic-bezier(.2,.8,.2,1) both}
+.rise-up{animation:rise2 .35s cubic-bezier(.2,.8,.2,1) both}
+.rimflow{animation:rainbowB 14s linear infinite}
+.bliss{background:linear-gradient(90deg,#FF4D4D,#FFC93C,#3D7BFF,#FF4D4D);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;animation:tri 8s linear infinite;filter:drop-shadow(0 0 10px rgba(255,201,60,.35)) drop-shadow(0 0 18px rgba(61,123,255,.3))}
+.sp{transform-box:fill-box;transform-origin:center}
+.sp-idle{animation:breathe2 3.6s ease-in-out infinite}
+.sp-think{animation:breathe2 .7s ease-in-out infinite;filter:drop-shadow(0 0 4px #FFC93C)}
+.wrap-think{transform-box:fill-box;transform-origin:center;animation:spin 2.4s linear infinite}
+.bar{transform-box:fill-box;transform-origin:center;animation:bar .7s ease-in-out infinite}
+.off{opacity:0}
+.on{opacity:1;transition:opacity .2s}
+.carriage{animation:carriage .55s cubic-bezier(.3,.7,.3,1)}
+.ding{animation:ding .9s ease-out both}
+
+/* pieces */
+.layer{position:absolute;left:0;top:0;width:100%;height:66.588%}
+.pbtn{position:absolute;border:none;background:transparent;cursor:pointer;padding:0}
+.pbtn:focus-visible,.chip:focus-visible,.k:focus-visible,.ai:focus-visible{outline:2px solid #FFC93C;outline-offset:1px}
+
+/* keys */
+.k{border:none;background:transparent;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center;height:100%;-webkit-user-select:none;user-select:none;touch-action:manipulation}
+.cap{position:relative;isolation:isolate;display:grid;place-items:center;line-height:1;text-align:center;color:#1B140A;font-family:'Courier Prime','Courier New',Courier,monospace;font-weight:700;border-radius:50%;background:linear-gradient(160deg,#FBE7A1 0%,#E2B94E 28%,#B88A2A 55%,#7E5B17 78%,#D7AE4F 100%);box-shadow:inset 0 1.5px 1px rgba(255,248,214,.85),inset 0 -2px 2px rgba(60,40,5,.55),0 4px 0 #4A3410,0 6px 7px rgba(0,0,0,.65);transition:transform .07s,box-shadow .07s}
+.cap::before{content:'';position:absolute;inset:13%;border-radius:inherit;z-index:-1;background:radial-gradient(circle at 42% 34%,#FFFBEA 0%,#F6ECCB 45%,#E9DAAE 85%,#D9C792 100%);box-shadow:inset 0 2px 3px rgba(70,50,10,.45),inset 0 -1px 1px rgba(255,255,255,.6)}
+.cap.wide::before{inset:4px}
+.cap.gold::before{background:radial-gradient(circle at 42% 34%,#FFF1B8 0%,#FFD45A 50%,#E6AE2A 100%)}
+.k:active .cap{transform:translateY(3px);box-shadow:inset 0 1.5px 1px rgba(255,248,214,.85),inset 0 -2px 2px rgba(60,40,5,.55),0 1px 0 #4A3410,0 2px 3px rgba(0,0,0,.6)}
+.round{width:calc(100% - 3px);aspect-ratio:1/1}
+.glyph{display:block;line-height:1}
+.chip{flex:1 1 0;min-width:0;height:32px;padding:0 3px;border-radius:16px;background:transparent;color:var(--ink);font:700 12px/1.05 'Courier Prime','Courier New',monospace;cursor:pointer;white-space:normal}
+.iconbtn{flex:0 0 38px;width:38px;height:38px;margin-top:-4px;border-radius:50%;border:none;background:transparent;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center}
+
+/* overlays */
+.overlay{position:absolute;inset:0;background:var(--bg);z-index:5}
+.panel{position:absolute;inset:2px;border-radius:14px;display:flex;flex-direction:column}
+.phead{display:flex;align-items:center;justify-content:space-between;padding:8px 8px 8px 22px;border-bottom:1px solid #1A1F2B}
+.round48{width:48px;height:48px;border-radius:50%;border:1px solid #2A3040;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.lbl{font:500 12px Inter,sans-serif;color:#A9ADBA;letter-spacing:1px}
+.field{height:46px;border-radius:10px;border:1px solid #2A3040;background:#07080C;color:var(--ink);padding:0 12px;font:400 16px Inter,sans-serif}
+.h2{margin:0 0 4px;font:700 15px 'Courier Prime','Courier New',monospace;letter-spacing:2px}
+
+/* splash */
+@keyframes sIn{0%{opacity:0}100%{opacity:1}}
+@keyframes sOutLate{0%,93%{opacity:1}100%{opacity:0}}
+@keyframes sGrow{0%{max-width:0;opacity:0}100%{max-width:44px;opacity:1}}
+@keyframes sGrowS{0%{max-width:0}100%{max-width:28px}}
+@keyframes sGoldOut{0%{opacity:1}100%{opacity:0}}
+@keyframes sFromL{0%{transform:translateX(-150%);opacity:0}100%{transform:translateX(0);opacity:1}}
+@keyframes sFromR{0%{transform:translateX(150%);opacity:0}100%{transform:translateX(0);opacity:1}}
+@keyframes sPop{0%{transform:scale(0) rotate(-180deg);opacity:0}70%{transform:scale(1.15) rotate(10deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}
+@keyframes sScroll{0%{transform:translateY(0)}100%{transform:translateY(-50%)}}
+.splash{animation:sOutLate 18.6s linear both}
+.s-type{display:inline-block;overflow:hidden;white-space:nowrap;vertical-align:bottom;max-width:0;opacity:0;animation:sGrow .12s steps(1,end) both}
+.s-ty{display:inline-block;overflow:hidden;white-space:pre;vertical-align:bottom;max-width:0;animation:sGrowS .05s steps(1,end) both}
+.s-gold{animation:sGoldOut .8s ease-in 11s both}
+.s-tri{opacity:0;animation:sIn 1.2s ease-out 11s both}
+.s-l{opacity:0;animation:sFromL 1.4s cubic-bezier(.2,.8,.2,1) 5.2s both}
+.s-r{opacity:0;animation:sFromR 1.4s cubic-bezier(.2,.8,.2,1) 5.2s both}
+.s-ring{opacity:0;animation:sPop .9s cubic-bezier(.2,.8,.2,1) 6.8s both}
+.s-code{animation:sScroll 7s linear 6.6s infinite}
+.s-tag{opacity:0;animation:sIn 1.2s ease-out 12.2s both}
+.s-badge{opacity:0;animation:sIn 1.2s ease-out 13.4s both}
+.s-caret{animation:blink .8s step-end infinite}
+.s-caret-gone{animation:blink .8s step-end infinite,sGoldOut .1s linear 5s both}
+.s-skip{opacity:0;animation:sIn 1s ease-out 1.5s both}
+@media (prefers-reduced-motion: reduce){.flow,.talk,.rimflow,.bliss,.sp-idle,.sp-think,.wrap-think,.bar,.turning,.s-code{animation:none!important}}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- my piece (answer) -->
+<svg id="ansSvg" class="layer" viewBox="0 0 390 562" preserveAspectRatio="none" aria-hidden="true">
+<path id="ansPath" class="idle" vector-effect="non-scaling-stroke" d="M14.5 2.5 H357.5 A12 12 0 0 1 369.5 14.5 V100 C376 108 387 118 387 124 C387 130 376 140 369.5 148 V233 A12 12 0 0 1 357.5 245 H128.5 A6 6 0 0 0 122.5 251 V305 A6 6 0 0 1 116.5 311 H8.5 A6 6 0 0 1 2.5 305 V14.5 A12 12 0 0 1 14.5 2.5 Z" fill="#0F121A" stroke="#2A3040" stroke-width="1"/>
+<path id="ansGrip" class="idle" vector-effect="non-scaling-stroke" d="M363.5 233 A6 6 0 0 1 357.5 239 M359.5 233 A2 2 0 0 1 357.5 235" fill="none" stroke="#8D92A1" stroke-width="1.5" stroke-linecap="round"/>
+</svg>
+<!-- your piece (question) -->
+<svg id="qSvg" class="layer blueglow" viewBox="0 0 390 562" preserveAspectRatio="none" aria-hidden="true">
+<path id="qPath" vector-effect="non-scaling-stroke" d="M375.5 559.5 H32.5 A12 12 0 0 1 20.5 547.5 V462 C14 454 3 444 3 438 C3 432 14 422 20.5 414 V329 A12 12 0 0 1 32.5 317 H261.5 A6 6 0 0 0 267.5 311 V257 A6 6 0 0 1 273.5 251 H381.5 A6 6 0 0 1 387.5 257 V547.5 A12 12 0 0 1 375.5 559.5 Z" fill="#0B0E15" stroke="#3D7BFF" stroke-width="1" style="transition:stroke .3s"/>
+<path id="qGrip" vector-effect="non-scaling-stroke" d="M26.5 547.5 A6 6 0 0 0 32.5 553.5 M30.5 547.5 A2 2 0 0 0 32.5 549.5" fill="none" stroke="#3D7BFF" stroke-width="1.5" stroke-linecap="round"/>
+</svg>
+
+<section aria-label="Answer" aria-live="polite" style="position:absolute;left:.77%;top:.36%;width:93.85%;height:28.55%;overflow:hidden">
+<div id="badge" title="Drag me" style="position:absolute;top:9px;left:50%;transform:translate(-50%,0);z-index:2;padding:2px 6px;white-space:nowrap;font:600 8px 'Space Grotesk',sans-serif;letter-spacing:2.5px;color:#FFC93C;text-shadow:0 0 8px rgba(255,201,60,.6);cursor:grab;touch-action:none;-webkit-user-select:none;user-select:none">MADE BY OVI WITH CLAUDE</div>
+<div style="position:absolute;left:18px;right:18px;top:26px;bottom:14px;display:flex;align-items:center;justify-content:center">
+<div id="waiting" style="display:flex;flex-direction:column;align-items:center;gap:10px">
+<span class="bliss" style="font:700 40px 'Space Grotesk',sans-serif;letter-spacing:14px;padding-left:14px">BLISS</span>
+<span style="font:500 11px 'Space Grotesk',sans-serif;letter-spacing:1.5px;color:#8D92A1">WITH <span id="aiName">CLAUDE</span> · HOLD THE RING TO SWITCH</span>
+</div>
+<div id="thinking" class="hide" style="display:flex;gap:10px" aria-label="Thinking">
+<span class="dot" style="width:9px;height:9px;border-radius:50%;background:#FF4D4D"></span>
+<span class="dot" style="width:9px;height:9px;border-radius:50%;background:#FFC93C;animation-delay:.2s"></span>
+<span class="dot" style="width:9px;height:9px;border-radius:50%;background:#3D7BFF;animation-delay:.4s"></span>
+</div>
+<p id="answer" class="hide swap" style="margin:0;font:500 21px/1.45 'Space Grotesk',sans-serif;text-align:center;white-space:pre-line;color:#FFF8E6"></p>
+</div>
+</section>
+
+<button class="pbtn" data-act="openAnswer" aria-label="Open the answer full screen" style="right:0;top:11.37%;width:44px;height:6.64%;min-height:44px"></button>
+<button class="pbtn" data-act="cycleDepth" id="depthBtn" style="left:.77%;top:29.27%;width:30.5%;height:7.35%;min-height:44px;display:flex;align-items:center;justify-content:center">
+<span id="depthLabel" style="font:500 21px 'Space Grotesk',sans-serif;text-decoration:underline;text-underline-offset:6px;text-decoration-thickness:2px;text-decoration-color:#3D7BFF">Short</span>
+</button>
+
+<!-- my ring -->
+<button id="ring" class="ai" aria-label="Speak the answer. Hold to choose your AI." style="-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;touch-action:none;position:absolute;z-index:3;left:calc(50% - 28px);top:calc(33.29% - 28px);width:56px;height:56px;border-radius:50%;border:none;cursor:pointer;background:#07080C;box-shadow:0 0 14px rgba(61,123,255,.35);padding:0;display:flex;align-items:center;justify-content:center">
+<svg width="56" height="56" viewBox="0 0 68 68" aria-hidden="true">
+<g id="ringArcs">
+<circle cx="34" cy="34" r="30" fill="none" stroke="#FF4D4D" stroke-width="5" stroke-linecap="round" stroke-dasharray="50 138.5" stroke-dashoffset="0"/>
+<circle cx="34" cy="34" r="30" fill="none" stroke="#FFC93C" stroke-width="5" stroke-linecap="round" stroke-dasharray="50 138.5" stroke-dashoffset="-62.8"/>
+<circle cx="34" cy="34" r="30" fill="none" stroke="#3D7BFF" stroke-width="5" stroke-linecap="round" stroke-dasharray="50 138.5" stroke-dashoffset="-125.6"/>
+</g>
+<g id="sparkWrap" class="on"><path id="spark" class="sp sp-idle" d="M34 22 L37 31 L46 34 L37 37 L34 46 L31 37 L22 34 L31 31 Z" fill="#F4F2EC"/></g>
+<g id="wave" class="off">
+<rect class="bar" x="23.3" y="22" width="3.4" height="24" rx="1.7" fill="#F4F2EC"/>
+<rect class="bar" x="28.3" y="22" width="3.4" height="24" rx="1.7" fill="#F4F2EC" style="animation-delay:.15s"/>
+<rect class="bar" x="33.3" y="22" width="3.4" height="24" rx="1.7" fill="#F4F2EC" style="animation-delay:.3s"/>
+<rect class="bar" x="38.3" y="22" width="3.4" height="24" rx="1.7" fill="#F4F2EC" style="animation-delay:.15s"/>
+<rect class="bar" x="43.3" y="22" width="3.4" height="24" rx="1.7" fill="#F4F2EC"/>
+</g>
+</svg>
+</button>
+
+<button class="pbtn" data-act="talk" id="talkBtn" aria-label="Talk" style="left:68.72%;top:29.98%;width:30.5%;height:7.35%;min-height:44px;display:flex;align-items:center;justify-content:center;gap:6px">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/></svg>
+<span id="talkLabel" style="font:500 21px 'Space Grotesk',sans-serif">Talk</span>
+</button>
+
+<section id="qBox" role="textbox" aria-label="Your question" style="position:absolute;left:5.38%;top:37.68%;width:93.85%;height:28.44%;padding:16px 20px;font:400 23px/1.4 Inter,sans-serif;overflow:hidden">
+<span id="qPlaceholder" style="color:#8D92A1">Ask, search, or do anything…</span><span id="qText" style="white-space:pre-wrap;word-break:break-word"></span><span id="qCaret" class="caret" style="display:inline-block;width:2px;height:27px;background:#3D7BFF;vertical-align:-5px;margin-left:1px"></span>
+</section>
+<label for="nativeAsk" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Your question</label>
+<textarea id="nativeAsk" class="hide" placeholder="Ask, search, or do anything…" style="position:absolute;left:5.38%;top:37.68%;width:93.85%;height:28.44%;padding:16px 20px;resize:none;border:none;outline:none;background:transparent;color:#F4F2EC;font:400 23px/1.4 Inter,sans-serif;caret-color:#3D7BFF"></textarea>
+
+<button class="pbtn" data-act="openAnswer" aria-label="Open the answer full screen" style="left:86.03%;top:25.36%;width:44px;height:44px"></button>
+<button class="pbtn" data-act="openQuestion" aria-label="Open your question full screen" style="left:2.69%;top:62.56%;width:44px;height:44px;z-index:2"></button>
+<button class="pbtn" data-act="openQuestion" aria-label="Open your question full screen" style="left:0;top:48.58%;width:44px;height:6.64%;min-height:44px"></button>
+
+<!-- keyboard -->
+<section id="kb" aria-label="Keyboard" style="position:absolute;left:2px;right:2px;top:calc(66.588% + 2px);bottom:2px;border-radius:14px;border:1px solid #5A4520;background:linear-gradient(180deg,#1A130B 0%,#100B06 100%);box-shadow:inset 0 1px 0 rgba(226,185,78,.25);padding:6px 2px 10px;display:flex;flex-direction:column;justify-content:space-between">
+<div id="kbBliss" style="display:flex;flex-direction:column;justify-content:space-between;height:100%">
+<div style="display:flex;align-items:center;gap:4px;flex:0 0 32px;padding:0 2px">
+<button class="chip" data-chip="Explain" style="border:1px solid #3D7BFF">Explain</button>
+<button class="chip" data-chip="Compare" style="border:1px solid #FFC93C">Compare</button>
+<button class="chip" data-chip="Do it" style="border:1px solid #FF4D4D">Do it</button>
+<button class="chip" data-chip="Are you sure?" style="border:1px solid #3FBF6A">Are you sure?</button>
+<button class="iconbtn" data-act="openHelp" aria-label="How BLISS works"><svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="#E2B94E" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M12 11v6"/><path d="M12 7.5h.01" stroke-width="2.6"/></svg></button>
+<button class="iconbtn" data-act="toNative" aria-label="Switch to the phone keyboard"><svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="#E2B94E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="6" width="19" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></svg></button>
+</div>
+<div style="display:flex;flex-direction:column;gap:1px">
+<div id="rows"></div>
+<div style="display:flex;align-items:center;justify-content:center;height:44px">
+<button class="k" data-act="toggleNum" id="numBtn" aria-label="Numbers and symbols" style="flex:0 0 13%"><span class="cap wide" id="numLabel" style="width:calc(100% - 6px);height:35px;border-radius:17.5px;font-size:19px;font-weight:400">123</span></button>
+<button class="k" data-ch="#" aria-label="Hash" style="flex:0 0 10%"><span class="cap round" style="font-size:31px"><span class="glyph" style="transform:translateY(3px);-webkit-text-stroke:.6px">#</span></span></button>
+<button class="k" data-ch="," aria-label="Comma" style="flex:0 0 10%"><span class="cap round" style="font-size:24px">,</span></button>
+<button class="k" data-act="space" aria-label="Space" style="flex:0 0 30%;padding:0 4px"><span class="cap wide" style="width:100%;height:35px;border-radius:17.5px;font-size:15px;font-weight:400;letter-spacing:4px;color:#4A3D1E">SPACE</span></button>
+<button class="k" data-ch="." aria-label="Full stop" style="flex:0 0 10%"><span class="cap round" style="font-size:24px">.</span></button>
+<button class="k" data-ch="@" aria-label="At sign" style="flex:0 0 10%"><span class="cap round" style="font-size:30px"><span class="glyph" style="transform:translateY(2px);-webkit-text-stroke:.9px">@</span></span></button>
+<button class="k" data-act="send" aria-label="Send" style="flex:0 0 13%"><span class="cap wide gold" style="width:calc(100% - 6px);height:35px;border-radius:17.5px;font-size:15px;letter-spacing:1px;color:#2A1C04">SEND</span></button>
+</div>
+</div>
+</div>
+<div id="kbNative" class="hide" style="flex:1;flex-direction:column;align-items:center;justify-content:flex-start;gap:12px;padding-top:10px;text-align:center">
+<p style="margin:0;font:400 14px/1.4 'Courier Prime','Courier New',monospace;color:#E9E6DE">Using your phone’s keyboard</p>
+<button class="chip" data-act="toBliss" style="flex:none;min-height:44px;padding:0 20px;border-radius:22px;border:1px solid #E2B94E;color:#FFE08A;font-size:15px">Back to BLISS keys</button>
+</div>
+</section>
+
+<div id="dingBadge" class="hide" aria-hidden="true" style="position:absolute;left:50%;top:calc(66.588% - 30px);z-index:4;padding:6px 16px;border-radius:18px;background:#FFC93C;color:#2A1C04;font:700 20px 'Courier Prime','Courier New',monospace;letter-spacing:2px;box-shadow:0 0 22px rgba(255,201,60,.7)">DING!</div>
+
+<!-- full answer -->
+<section id="fullAnswer" class="overlay hide" aria-label="Answer, full screen">
+<div class="panel rimflow" style="border:1px solid #FFC93C;background:#0F121A">
+<div class="phead"><span style="font:500 13px 'Space Grotesk',sans-serif;letter-spacing:6px;color:#8D92A1">ANSWER</span>
+<button class="round48" data-act="close" aria-label="Close full screen"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F4F2EC" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button></div>
+<div class="scroll" style="padding:22px 24px 40px;font:400 18px/1.65 Inter,sans-serif;color:#E9E6DE">
+<h1 style="margin:0 0 16px;font:600 28px/1.25 'Space Grotesk',sans-serif;color:#FFF8E6">UX and UI, in full</h1>
+<p style="margin:0 0 16px">UX is the journey a person takes through a product: whether they reach their goal, how fast, and how sure they feel on the way. It is mostly invisible. You notice it only when it breaks.</p>
+<p style="margin:0 0 16px">UI is the surface that journey runs across: the buttons, type, colour, spacing and motion. It is what you see and touch, and it is how the product answers back when you touch it.</p>
+<p style="margin:0 0 16px">UX comes first. It decides the structure: what goes where, what happens in what order, and what can be removed. UI then dresses that structure so it is readable, tappable and calm.</p>
+<p style="margin:0 0 16px">You cannot fix a broken flow with nicer pixels. And a perfect flow still fails if the buttons are too small, the text too faint, or the important thing hidden.</p>
+<p style="margin:0 0 16px">After launch, the two stop being a line and become a loop. People touch the UI, you watch where they stumble, and what you learn becomes the next round of UX.</p>
+<p style="margin:0">This screen is that idea in practice: a short answer up top that never scrolls, and the whole story only when you ask for it.</p>
+</div></div>
+</section>
+
+<!-- full question -->
+<section id="fullQuestion" class="overlay hide" aria-label="Your question, full screen" style="bottom:auto;height:calc(66.588% + 1px)">
+<div class="panel" id="fqPanel" style="border:1px solid #3D7BFF;background:#0B0E15;box-shadow:0 0 22px rgba(61,123,255,.25)">
+<div class="phead" style="padding:8px 22px 8px 8px">
+<button class="round48" data-act="close" aria-label="Close full screen"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F4F2EC" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+<span style="font:500 13px 'Space Grotesk',sans-serif;letter-spacing:6px;color:#8D92A1">YOUR QUESTION</span></div>
+<div class="scroll" style="padding:22px 24px;font:400 24px/1.45 Inter,sans-serif">
+<span id="fqPlaceholder" style="color:#8D92A1">Write as much as you like. Here it scrolls.</span><span id="fqText" style="white-space:pre-wrap;word-break:break-word"></span><span id="fqCaret" class="caret" style="display:inline-block;width:2px;height:28px;background:#3D7BFF;vertical-align:-5px;margin-left:1px"></span>
+</div></div>
+</section>
+
+<!-- help -->
+<section id="fullHelp" class="overlay hide" aria-label="How BLISS works" style="z-index:6">
+<div class="panel" style="border:1px solid #E2B94E;background:#110D08">
+<div class="phead" style="border-bottom-color:#3A2E14"><span class="bliss" style="font:700 16px 'Space Grotesk',sans-serif;letter-spacing:6px">HOW BLISS WORKS</span>
+<button class="round48" data-act="close" aria-label="Close" style="border-color:#5A4520"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFE08A" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+<div class="scroll" style="padding:18px 22px 36px;font:400 16px/1.6 Inter,sans-serif;color:#E9E6DE">
+<p style="margin:0 0 18px;font:500 19px/1.45 'Space Grotesk',sans-serif;color:#FFF8E6">One screen, three thirds. Nothing scrolls until you ask.</p>
+<h2 class="h2" style="color:#FFC93C">TOP · THE ANSWER</h2>
+<p style="margin:0 0 16px">The answer lands here, short. White outline means ready. A slow rainbow means there’s an answer. Tap <b>Short</b> to cycle Short · Medium · Deep.</p>
+<h2 class="h2" style="color:#6E9BFF">MIDDLE · YOUR QUESTION</h2>
+<p style="margin:0 0 16px">What you type or say shows up here. Blue means typing; red means listening. Tap <b>Talk</b> to speak, and again to stop.</p>
+<h2 class="h2" style="color:#FF7A70">BOTTOM · THE KEYS</h2>
+<p style="margin:0 0 16px">Typewriter keys. The chips add intent: <b>Explain</b>, <b>Compare</b>, <b>Do it</b>, and <b>Are you sure?</b> to make me double-check. Double-tap space for a full stop. The keyboard icon switches to your phone’s own keyboard.</p>
+<h2 class="h2" style="color:#E9E6DE">THE RING</h2>
+<p style="margin:0 0 16px">The red, yellow and blue ring between the two pieces is my voice. Tap it and I read the answer aloud; the top piece pulses while I speak. Hold it to choose which AI answers, or drag it and watch it float home.</p>
+<h2 class="h2" style="color:#E9E6DE">GO FULL SCREEN</h2>
+<p style="margin:0">Each piece has a nose on its side and an arc in its corner. Tap either: the answer opens from the right to read in full; your question opens from the left to write as much as you like. The back arrow returns.</p>
+<div style="margin:26px 0 0;padding-top:20px;border-top:1px solid #3A2E14">
+<h2 class="h2" style="margin-bottom:10px;color:#FFC93C">THE PROJECT</h2>
+<p style="margin:0 0 14px">BLISS is one piece of a larger body of work by Ovi Demetrian.</p>
+<p class="bliss" style="margin:0 0 4px;font:700 17px 'Space Grotesk',sans-serif">SYNTHIOSIS</p>
+<p style="margin:0 0 14px">Creation through coexistence: humans and AI each keep their lane and make something neither could make alone.</p>
+<p class="bliss" style="margin:0 0 4px;font:700 17px 'Space Grotesk',sans-serif">GGI · Genial Genuine Intelligence</p>
+<p style="margin:0 0 14px">A framework for AI that amplifies human thinking instead of replacing it, built on the Ten Laws of AI.</p>
+<p style="margin:0 0 16px;font:500 16px/1.5 'Space Grotesk',sans-serif;color:#FFF8E6">“Machines have the speed. Humans have the time.”</p>
+<p style="margin:0 0 6px"><a href="https://10lawsofai.com" target="_blank" rel="noopener" style="color:#FFC93C">10lawsofai.com</a></p>
+<p style="margin:0"><a href="https://ovidemetrian.github.io/GGI-GENIAL-GENUINE-INTELLIGENCE/" target="_blank" rel="noopener" style="color:#FFC93C">GGI Control Panel</a></p>
+</div>
+</div></div>
+</section>
+
+<!-- picker -->
+<section id="fullPicker" class="overlay hide" aria-label="Choose your AI" style="z-index:7">
+<div class="panel" style="border:1px solid #E9E6DE;background:#0F121A">
+<div class="phead"><span class="bliss" style="font:700 16px 'Space Grotesk',sans-serif;letter-spacing:5px">CHOOSE YOUR AI</span>
+<button class="round48" data-act="close" aria-label="Close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F4F2EC" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+<div class="scroll" style="padding:14px 14px 24px;display:flex;flex-direction:column;gap:10px">
+<p style="margin:2px 8px 6px;font:400 15px/1.5 Inter,sans-serif;color:#A9ADBA">Same screen, any brain. Pick who answers in the centre ring.</p>
+<div id="aiList" style="display:flex;flex-direction:column;gap:10px"></div>
+<div id="apiCard" style="border-radius:14px;border:1px solid #2A3040;overflow:hidden">
+<button data-act="toggleApi" id="apiToggle" aria-expanded="false" style="width:100%;min-height:68px;display:flex;align-items:center;gap:14px;padding:10px 16px;border:none;background:transparent;cursor:pointer;text-align:left;color:#F4F2EC">
+<svg width="40" height="40" viewBox="0 0 68 68" aria-hidden="true" style="flex-shrink:0"><circle cx="34" cy="34" r="28" fill="none" stroke="#FFC93C" stroke-width="6" stroke-dasharray="8 7"/><path d="M27 26l-8 8 8 8M41 26l8 8-8 8" fill="none" stroke="#F4F2EC" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<span style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font:600 19px 'Space Grotesk',sans-serif">Your own API</span><span style="font:400 13px Inter,sans-serif;color:#A9ADBA">Connect any model with an endpoint and key</span></span>
+<svg id="apiChevron" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E9E6DE" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transition:transform .25s"><path d="M9 6l6 6-6 6"/></svg>
+</button>
+<div id="apiBody" class="hide" style="padding:0 16px 16px;flex-direction:column;gap:10px">
+<label for="apiName" class="lbl">NAME</label><input id="apiName" class="field" type="text" placeholder="My model">
+<label for="apiUrl" class="lbl">ENDPOINT URL</label><input id="apiUrl" class="field" type="url" placeholder="https://…">
+<label for="apiKey" class="lbl">API KEY</label><input id="apiKey" class="field" type="password" autocomplete="off" placeholder="••••••••">
+<button data-act="apiConnect" style="min-height:46px;border-radius:23px;border:none;background:#FFC93C;color:#2A1C04;font:700 15px 'Courier Prime','Courier New',monospace;letter-spacing:1px;cursor:pointer">CONNECT</button>
+<p id="apiNote" class="hide" style="margin:0;font:400 13px/1.5 Inter,sans-serif;color:#FFC93C">Concept only: nothing is sent or saved.</p>
+</div>
+</div>
+<p style="margin:10px 8px 0;font:500 15px/1.5 'Space Grotesk',sans-serif;color:#FFC93C;text-align:center">All those data centres. One chair. 😄</p>
+<p style="margin:4px 8px 0;font:400 12px/1.5 Inter,sans-serif;color:#8D92A1;text-align:center">Concept: only the first one is wired up. Names are for fun, no endorsements.</p>
+</div></div>
+</section>
+
+<!-- splash -->
+<button id="splash" class="splash" aria-label="BLISS. Tap to skip the intro." style="position:absolute;inset:0;z-index:20;border:none;padding:0;margin:0;width:100%;height:100%;background:#07080C;color:#F4F2EC;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;overflow:hidden">
+<div style="position:relative;width:264px;height:380px">
+<div class="s-l" style="position:absolute;inset:0">
+<svg viewBox="0 0 390 562" width="264" height="380" aria-hidden="true" style="position:absolute;inset:0;overflow:visible"><path d="M14.5 2.5 H357.5 A12 12 0 0 1 369.5 14.5 V100 C376 108 387 118 387 124 C387 130 376 140 369.5 148 V233 A12 12 0 0 1 357.5 245 H128.5 A6 6 0 0 0 122.5 251 V305 A6 6 0 0 1 116.5 311 H8.5 A6 6 0 0 1 2.5 305 V14.5 A12 12 0 0 1 14.5 2.5 Z" fill="#0F121A" stroke="#E9E6DE" stroke-width="2.5"/></svg>
+<div style="position:absolute;left:10px;top:10px;width:228px;height:146px;overflow:hidden;text-align:left;font:400 10.5px/1.6 'Courier Prime','Courier New',monospace"><div class="s-code" id="splashCode"></div></div>
+</div>
+<div class="s-r" style="position:absolute;inset:0">
+<svg viewBox="0 0 390 562" width="264" height="380" aria-hidden="true" style="position:absolute;inset:0;overflow:visible"><path d="M375.5 559.5 H32.5 A12 12 0 0 1 20.5 547.5 V462 C14 454 3 444 3 438 C3 432 14 422 20.5 414 V329 A12 12 0 0 1 32.5 317 H261.5 A6 6 0 0 0 267.5 311 V257 A6 6 0 0 1 273.5 251 H381.5 A6 6 0 0 1 387.5 257 V547.5 A12 12 0 0 1 375.5 559.5 Z" fill="#0B0E15" stroke="#3D7BFF" stroke-width="2.5"/></svg>
+<div id="splashTyped" style="position:absolute;left:24px;top:226px;width:226px;height:140px;text-align:left;font:400 19px/1.4 Inter,sans-serif;color:#F4F2EC"></div>
+</div>
+<svg class="s-ring" width="40" height="40" viewBox="0 0 68 68" aria-hidden="true" style="position:absolute;left:112px;top:170px">
+<circle cx="34" cy="34" r="30" fill="none" stroke="#FF4D4D" stroke-width="6" stroke-linecap="round" stroke-dasharray="50 138.5" stroke-dashoffset="0"/>
+<circle cx="34" cy="34" r="30" fill="none" stroke="#FFC93C" stroke-width="6" stroke-linecap="round" stroke-dasharray="50 138.5" stroke-dashoffset="-62.8"/>
+<circle cx="34" cy="34" r="30" fill="none" stroke="#3D7BFF" stroke-width="6" stroke-linecap="round" stroke-dasharray="50 138.5" stroke-dashoffset="-125.6"/>
+<path d="M34 20 L37.5 30.5 L48 34 L37.5 37.5 L34 48 L30.5 37.5 L20 34 L30.5 30.5 Z" fill="#F4F2EC"/>
+</svg>
+</div>
+<div style="position:relative;height:56px;display:flex;align-items:center;justify-content:center">
+<span class="s-gold" id="splashLetters" style="display:flex;align-items:flex-end;font:700 46px/1 'Courier Prime','Courier New',monospace;color:#F4F2EC"></span>
+<span class="s-tri" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center"><span class="bliss" style="font:700 46px 'Space Grotesk',sans-serif;letter-spacing:12px;padding-left:12px">BLISS</span></span>
+</div>
+<span class="s-tag" style="font:500 17px 'Space Grotesk',sans-serif;letter-spacing:4px;color:#E9E6DE">AI WITHOUT THE BOX</span>
+<span class="s-badge" style="font:600 10px 'Space Grotesk',sans-serif;letter-spacing:2.5px;color:#FFC93C;text-shadow:0 0 8px rgba(255,201,60,.6)">MADE BY OVI WITH CLAUDE</span>
+<span class="s-skip" style="position:absolute;bottom:22px;font:400 12px Inter,sans-serif;color:#8D92A1">Tap anywhere to skip</span>
+</button>
+
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var S = { text: '', phase: 'waiting', listening: false, speaking: false, shift: true, num: false, depth: 'short', full: '', ai: 'claude', kb: 'bliss', apiOpen: false, ding: false };
+  var ANSWERS = {
+    short: 'UX is the journey.\nUI is the surface.',
+    medium: 'UX: does it work for the human?\nUI: how it looks and responds.\nUX first, UI dresses it.',
+    deep: 'UX: flow, structure, less friction.\nUI: type, colour, motion.\nThen they loop, forever.'
+  };
+  var ORDER = ['short', 'medium', 'deep'];
+  var NAMES = { short: 'Short', medium: 'Medium', deep: 'Deep' };
+  var DCOL = { short: '#3D7BFF', medium: '#FFC93C', deep: '#FF4D4D' };
+  var AIS = [
+    { id: 'claude', name: 'Claude', c1: '#FF4D4D', c2: '#3D7BFF' },
+    { id: 'chatgpt', name: 'ChatGPT', c1: '#3FBF6A', c2: '#E9E6DE' },
+    { id: 'gemini', name: 'Gemini', c1: '#3D7BFF', c2: '#B48CFF' },
+    { id: 'copilot', name: 'Copilot', c1: '#2EC5CE', c2: '#FFC93C' },
+    { id: 'meta', name: 'Meta AI', c1: '#3D7BFF', c2: '#2EC5CE' },
+    { id: 'grok', name: 'Grok', c1: '#E9E6DE', c2: '#5C6273' },
+    { id: 'mistral', name: 'Le Chat', c1: '#FF8A3D', c2: '#FFC93C' },
+    { id: 'deepseek', name: 'DeepSeek', c1: '#3D7BFF', c2: '#1F4FC2' },
+    { id: 'perplexity', name: 'Perplexity', c1: '#2EC5CE', c2: '#E9E6DE' },
+    { id: 'astra', name: 'Project Astra', c1: '#B48CFF', c2: '#FF4D4D' },
+    { id: 'siri', name: 'Siri', c1: '#FF5FA2', c2: '#B48CFF' },
+    { id: 'alexa', name: 'Alexa', c1: '#2EC5CE', c2: '#3D7BFF' },
+    { id: 'local', name: 'On-device AI', c1: '#FFC93C', c2: '#8D92A1' }
+  ];
+  var LETTERS = [['q','w','e','r','t','y','u','i','o','p'],['a','s','d','f','g','h','j','k','l'],['z','x','c','v','b','n','m']];
+  var NUMBERS = [['1','2','3','4','5','6','7','8','9','0'],['-','/',':','(',')','$','&','@','"'],['.',',','?','!','\'','*','#']];
+  function esc(t) { return String(t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function setState(p) { for (var k in p) { S[k] = p[k]; } render(); }
+
+  /* ---------- sound ---------- */
+  var ac = null;
+  function audio() {
+    var C = window.AudioContext || window.webkitAudioContext; if (!C) { return null; }
+    if (!ac) { ac = new C(); }
+    if (ac.state === 'suspended' && ac.resume) { ac.resume(); }
+    return ac;
+  }
+  function clack(big) {
+    try {
+      var a = audio(); if (!a) { return; }
+      var t = a.currentTime, len = Math.floor(a.sampleRate * 0.045);
+      var buf = a.createBuffer(1, len, a.sampleRate), d = buf.getChannelData(0);
+      for (var i = 0; i < len; i++) { d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 4); }
+      var src = a.createBufferSource(); src.buffer = buf;
+      var bp = a.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = big ? 900 : 1800; bp.Q.value = 1.2;
+      var g = a.createGain(); g.gain.value = big ? 0.4 : 0.3;
+      src.connect(bp); bp.connect(g); g.connect(a.destination); src.start(t);
+      var o = a.createOscillator(), og = a.createGain();
+      o.frequency.setValueAtTime(big ? 140 : 220, t); o.frequency.exponentialRampToValueAtTime(60, t + 0.05);
+      og.gain.setValueAtTime(0.15, t); og.gain.exponentialRampToValueAtTime(0.0001, t + 0.06);
+      o.connect(og); og.connect(a.destination); o.start(t); o.stop(t + 0.07);
+    } catch (e) {}
+  }
+  function bell() {
+    try {
+      var a = audio(); if (!a) { return; }
+      var t = a.currentTime + 0.02;
+      [2093, 3136, 4186].forEach(function (f, i) {
+        var o = a.createOscillator(), g = a.createGain();
+        o.type = 'sine'; o.frequency.value = f;
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime([0.25, 0.08, 0.04][i], t + 0.005);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + 1.2);
+        o.connect(g); g.connect(a.destination); o.start(t); o.stop(t + 1.25);
+      });
+    } catch (e) {}
+  }
+
+  /* ---------- actions ---------- */
+  var askTimer = null, dingTimer = null;
+  function ask() {
+    bell();
+    setState({ phase: 'thinking', speaking: false, full: '', ding: true });
+    var kb = $('kb'); kb.classList.remove('carriage'); void kb.offsetWidth; kb.classList.add('carriage');
+    clearTimeout(dingTimer); dingTimer = setTimeout(function () { setState({ ding: false }); }, 900);
+    clearTimeout(askTimer); askTimer = setTimeout(function () { setState({ phase: 'answered' }); }, 900);
+  }
+  function addText(ch, keepShift) { setState({ text: S.text + ch, shift: keepShift ? S.shift : false }); }
+  var ACTS = {
+    openAnswer: function () { setState({ full: 'answer', phase: S.phase === 'waiting' ? 'answered' : S.phase }); },
+    openQuestion: function () { setState({ full: 'question' }); },
+    openHelp: function () { setState({ full: 'help' }); },
+    close: function () { setState({ full: '' }); },
+    cycleDepth: function () { var i = ORDER.indexOf(S.depth); setState({ depth: ORDER[(i + 1) % 3] }); },
+    talk: function () {
+      if (S.listening) { setState({ listening: false, text: 'What’s the difference between UX and UI?' }); ask(); }
+      else { setState({ listening: true, text: '' }); }
+    },
+    toggleNum: function () { clack(); setState({ num: !S.num }); },
+    space: function () {
+      clack(true);
+      if (/\w $/.test(S.text)) { setState({ text: S.text.slice(0, -1) + '. ', shift: true }); }
+      else { setState({ text: S.text + ' ' }); }
+    },
+    send: function () { ask(); },
+    toNative: function () { setState({ kb: 'native' }); setTimeout(function () { $('nativeAsk').value = S.text; $('nativeAsk').focus(); }, 60); },
+    toBliss: function () { $('nativeAsk').blur(); setState({ kb: 'bliss' }); },
+    toggleApi: function () { setState({ apiOpen: !S.apiOpen }); },
+    apiConnect: function () { ['apiName', 'apiUrl', 'apiKey'].forEach(function (id) { $(id).value = ''; }); $('apiNote').classList.remove('hide'); }
+  };
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-act],[data-chip],[data-ch],[data-key],[data-ai]'); if (!b) { return; }
+    if (b.dataset.act && ACTS[b.dataset.act]) { ACTS[b.dataset.act](); return; }
+    if (b.dataset.chip) { var sep = S.text && !/\s$/.test(S.text) ? ' ' : ''; setState({ text: S.text + sep + b.dataset.chip + ' ', shift: false }); return; }
+    if (b.dataset.ch) { clack(); var c = b.dataset.ch; setState({ text: S.text + c, shift: c === '.' }); return; }
+    if (b.dataset.key) {
+      clack();
+      var k = b.dataset.key;
+      if (k === 'shift') { setState({ shift: !S.shift }); }
+      else if (k === 'del') { setState({ text: S.text.slice(0, -1) }); }
+      else { addText(S.shift && !S.num ? k.toUpperCase() : k); }
+      return;
+    }
+    if (b.dataset.ai) { setState({ ai: b.dataset.ai, full: '' }); }
+  });
+  $('nativeAsk').addEventListener('input', function (e) { S.text = e.target.value; render(); });
+
+  /* ---------- ring: tap = speak, hold = picker, drag = float home ---------- */
+  var ring = $('ring'), held = false, moved = false, holdT = null;
+  ring.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+  ring.addEventListener('pointerdown', function (e) {
+    held = false; moved = false;
+    clearTimeout(holdT);
+    holdT = setTimeout(function () { if (moved) { return; } held = true; if (navigator.vibrate) { try { navigator.vibrate(15); } catch (err) {} } setState({ full: 'picker', speaking: false }); }, 550);
+    var x0 = e.clientX, y0 = e.clientY;
+    ring.style.transition = 'none';
+    function move(ev) {
+      var dx = ev.clientX - x0, dy = ev.clientY - y0;
+      if (!moved && Math.sqrt(dx * dx + dy * dy) > 8) { moved = true; clearTimeout(holdT); }
+      if (moved) { ring.style.transform = 'translate(' + dx + 'px,' + dy + 'px)'; }
+    }
+    function up() {
+      window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', up);
+      clearTimeout(holdT);
+      ring.style.transition = 'transform 2.6s cubic-bezier(.2,1.35,.35,1)';
+      ring.style.transform = 'translate(0,0)';
+      if (moved) { held = true; }
+    }
+    window.addEventListener('pointermove', move); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', up);
+  });
+  ring.addEventListener('click', function () { if (held) { held = false; return; } setState({ speaking: !S.speaking, phase: 'answered' }); });
+
+  /* ---------- draggable badge ---------- */
+  (function () {
+    var b = $('badge'), bx = 0, by = 0;
+    b.addEventListener('pointerdown', function (e) {
+      e.preventDefault(); b.setPointerCapture(e.pointerId); b.style.cursor = 'grabbing';
+      var x0 = e.clientX - bx, y0 = e.clientY - by;
+      function mv(ev) { bx = ev.clientX - x0; by = ev.clientY - y0; b.style.transform = 'translate(calc(-50% + ' + bx + 'px),' + by + 'px)'; }
+      function upB() { b.removeEventListener('pointermove', mv); b.removeEventListener('pointerup', upB); b.style.cursor = 'grab'; }
+      b.addEventListener('pointermove', mv); b.addEventListener('pointerup', upB);
+    });
+  })();
+
+  /* ---------- render ---------- */
+  function vis(id, on) { $(id).classList.toggle('hide', !on); }
+  function renderKeys() {
+    var src = S.num ? NUMBERS : LETTERS, leads = ['0', '5%', '0'], up = S.shift && !S.num, html = '';
+    src.forEach(function (r, i) {
+      html += '<div style="display:flex;height:42px">';
+      var keys = r.map(function (ch) {
+        var isL = /[a-z]/.test(ch), shown = up ? ch.toUpperCase() : ch;
+        var size = !isL ? '22px' : (up ? '28px' : '27px');
+        var dy = !isL ? '2px' : (up ? '3px' : (/[gjpqy]/.test(ch) ? '-1px' : '1px'));
+        return { key: ch, label: shown, aria: shown, size: size, dy: dy, stroke: '0', fg: '#1B140A', ml: '0' };
+      });
+      if (i === 2) {
+        keys.unshift({ key: 'shift', label: up ? '⬆' : '⇧', aria: 'Shift', size: '32px', dy: '2px', stroke: '.6px', fg: '#1E5B32', ml: '0' });
+        keys.push({ key: 'del', label: '✕', aria: 'Delete', size: '27px', dy: '2px', stroke: '1.6px', fg: '#B3261E', ml: '5%' });
+      }
+      keys[0].ml = leads[i];
+      keys.forEach(function (k) {
+        html += '<button class="k" data-key="' + esc(k.key) + '" aria-label="' + esc(k.aria) + '" style="flex:0 0 10%;margin-left:' + k.ml + '"><span class="cap round" style="color:' + k.fg + '"><span class="glyph" style="font-size:' + k.size + ';transform:translateY(' + k.dy + ');-webkit-text-stroke:' + k.stroke + '">' + esc(k.label) + '</span></span></button>';
+      });
+      html += '</div>';
+    });
+    $('rows').innerHTML = html;
+    $('numLabel').textContent = S.num ? 'ABC' : '123';
+    $('numBtn').setAttribute('aria-label', S.num ? 'Letters' : 'Numbers and symbols');
+  }
+  function renderPicker() {
+    var html = '';
+    AIS.forEach(function (a, i) {
+      var chosen = S.ai === a.id;
+      html += '<button data-ai="' + a.id + '" aria-pressed="' + chosen + '" style="min-height:68px;display:flex;align-items:center;gap:14px;padding:10px 16px;border-radius:14px;border:1px solid ' + (chosen ? '#E9E6DE' : '#2A3040') + ';background:' + (chosen ? '#161A24' : 'transparent') + ';cursor:pointer;text-align:left;color:#F4F2EC">' +
+        '<svg width="40" height="40" viewBox="0 0 68 68" aria-hidden="true" style="flex-shrink:0"><circle cx="34" cy="34" r="28" fill="none" stroke="' + a.c1 + '" stroke-width="6" stroke-linecap="round" stroke-dasharray="80 96"/><circle cx="34" cy="34" r="28" fill="none" stroke="' + a.c2 + '" stroke-width="6" stroke-linecap="round" stroke-dasharray="80 96" stroke-dashoffset="-88"/><text x="34" y="42" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="24" font-weight="700" fill="#F4F2EC">' + esc(a.name.charAt(0)) + '</text></svg>' +
+        '<span style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font:600 19px \'Space Grotesk\',sans-serif">' + esc(a.name) + '</span><span style="font:400 13px Inter,sans-serif;color:' + (i === 0 ? '#3FBF6A' : '#8D92A1') + '">' + (i === 0 ? 'Connected' : 'Not connected yet') + '</span></span>' +
+        (chosen ? '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3FBF6A" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>' : '') +
+        '</button>';
+    });
+    $('aiList').innerHTML = html;
+  }
+  var lastKeysSig = '';
+  function render() {
+    var active = S.phase !== 'waiting';
+    var ansCls = S.speaking ? 'talk' : (active ? 'flow' : 'idle');
+    $('ansPath').setAttribute('class', ansCls); $('ansGrip').setAttribute('class', ansCls);
+    $('ansSvg').setAttribute('class', 'layer' + (S.speaking ? ' pulsing' : ''));
+    var qEdge = S.listening ? '#FF4D4D' : '#3D7BFF';
+    $('qSvg').setAttribute('class', 'layer ' + (S.listening ? 'redglow' : 'blueglow'));
+    $('qPath').setAttribute('stroke', qEdge); $('qGrip').setAttribute('stroke', qEdge);
+    vis('waiting', S.phase === 'waiting'); vis('thinking', S.phase === 'thinking'); vis('answer', S.phase === 'answered');
+    $('answer').textContent = ANSWERS[S.depth];
+    $('depthLabel').textContent = NAMES[S.depth]; $('depthLabel').style.textDecorationColor = DCOL[S.depth];
+    $('depthBtn').setAttribute('aria-label', 'Answer size: ' + NAMES[S.depth] + '. Tap to change.');
+    $('talkBtn').style.color = S.listening ? '#FF4D4D' : '#F4F2EC';
+    $('talkLabel').textContent = S.listening ? 'Stop' : 'Talk';
+    $('talkBtn').setAttribute('aria-label', S.listening ? 'Stop listening' : 'Talk');
+    $('aiName').textContent = (AIS.filter(function (a) { return a.id === S.ai; })[0] || AIS[0]).name.toUpperCase();
+    var empty = S.text.length === 0;
+    vis('qPlaceholder', empty); $('qPlaceholder').textContent = S.listening ? 'Listening…' : 'Ask, search, or do anything…';
+    $('qText').textContent = S.text; $('qCaret').style.background = qEdge;
+    vis('fqPlaceholder', empty); $('fqText').textContent = S.text; $('fqCaret').style.background = qEdge; $('fqPanel').style.borderColor = qEdge;
+    var native = S.kb === 'native';
+    vis('qBox', !native); vis('nativeAsk', native);
+    vis('kbBliss', !native); $('kbNative').classList.toggle('hide', !native); $('kbNative').style.display = native ? 'flex' : '';
+    if (!native && $('nativeAsk').value !== S.text) { $('nativeAsk').value = S.text; }
+    var sig = (S.num ? 'n' : 'l') + (S.shift ? 'S' : 's');
+    if (sig !== lastKeysSig) { renderKeys(); lastKeysSig = sig; }
+    ring.setAttribute('aria-label', S.speaking ? 'Stop speaking' : 'Speak the answer. Hold to choose your AI.');
+    ring.setAttribute('aria-pressed', S.speaking ? 'true' : 'false');
+    ring.style.boxShadow = S.speaking ? '0 0 24px rgba(255,201,60,.75)' : '0 0 14px rgba(61,123,255,.35)';
+    $('ringArcs').setAttribute('class', S.speaking ? 'turning' : '');
+    $('spark').setAttribute('class', 'sp ' + (S.phase === 'thinking' ? 'sp-think' : 'sp-idle'));
+    $('spark').setAttribute('fill', S.phase === 'thinking' ? '#FFE08A' : '#F4F2EC');
+    $('sparkWrap').setAttribute('class', S.speaking ? 'off' : (S.phase === 'thinking' ? 'wrap-think' : 'on'));
+    $('wave').setAttribute('class', S.speaking ? 'on' : 'off');
+    var fa = $('fullAnswer'), fq = $('fullQuestion'), fh = $('fullHelp'), fp = $('fullPicker');
+    [[fa, 'answer', 'fromRight'], [fq, 'question', 'fromLeft'], [fh, 'help', 'fromLeft'], [fp, 'picker', 'rise-up']].forEach(function (o) {
+      var on = S.full === o[1], was = !o[0].classList.contains('hide');
+      o[0].classList.toggle('hide', !on);
+      if (on && !was) { o[0].classList.remove(o[2]); void o[0].offsetWidth; o[0].classList.add(o[2]); }
+    });
+    if (S.full === 'picker') { renderPicker(); }
+    $('apiCard').style.borderColor = S.apiOpen ? '#FFC93C' : '#2A3040';
+    $('apiCard').style.background = S.apiOpen ? '#161A24' : 'transparent';
+    $('apiToggle').setAttribute('aria-expanded', S.apiOpen ? 'true' : 'false');
+    $('apiChevron').style.transform = 'rotate(' + (S.apiOpen ? 90 : 0) + 'deg)';
+    $('apiBody').classList.toggle('hide', !S.apiOpen); $('apiBody').style.display = S.apiOpen ? 'flex' : '';
+    var d = $('dingBadge');
+    if (S.ding && d.classList.contains('hide')) { d.classList.remove('hide', 'ding'); void d.offsetWidth; d.classList.add('ding'); }
+    if (!S.ding) { d.classList.add('hide'); }
+  }
+
+  /* ---------- splash ---------- */
+  (function () {
+    var L = '';
+    'BLISS'.split('').forEach(function (ch, i) { L += '<span class="s-type" style="animation-delay:' + (2 + i * 0.5).toFixed(1) + 's">' + ch + '</span>'; });
+    L += '<span class="s-caret-gone" style="display:inline-block;width:3px;height:40px;margin-left:4px;background:#E2B94E"></span>';
+    $('splashLetters').innerHTML = L;
+    var q = Array.from('Are you sure? 😂'), T = '';
+    q.forEach(function (ch, i) { T += '<span class="s-ty" style="animation-delay:' + (7.4 + i * 0.22).toFixed(2) + 's">' + esc(ch) + '</span>'; });
+    T += '<span class="s-caret" style="display:inline-block;width:2px;height:22px;margin-left:1px;vertical-align:-4px;background:#3D7BFF"></span>';
+    $('splashTyped').innerHTML = T;
+    var R = '#FF6B6B', Y = '#FFC93C', B = '#6E9BFF', G = '#3FBF6A', W = '#E9E6DE', M = '#6E7486';
+    function line(parts) { return '<div>' + parts.map(function (p) { return '<span style="color:' + p[1] + '">' + esc(p[0]) + '</span>'; }).join('') + '</div>'; }
+    var code = [
+      [['const ', R], ['bliss', W], [' = ', W], ['ui', B], ['.with(', W], ['"you"', Y], [');', W]],
+      [['if ', R], ['(question) ', W], ['answer', B], ['.short();', W]],
+      [['ring', B], ['.speak({ ', W], ['voice', G], [': ', W], ['"me"', Y], [' });', W]],
+      [['keys', B], ['.forEach(', W], ['k', G], [' => ', R], ['k.clack());', W]],
+      [['// three thirds, nothing scrolls', M]],
+      [['send', B], ['.ding();', W]],
+      [['for ', R], ['(ai ', W], ['of ', R], ['chairs', B], [') sit(ai);', W]],
+      [['return ', R], ['"simplicity is bliss"', Y], [';', W]],
+      [['while ', R], ['(', W], ['true', G], [') ', W], ['learn', B], ['();', W]]
+    ].map(line).join('');
+    $('splashCode').innerHTML = code + code;
+    var sp = $('splash'), done = false;
+    function end() { if (done) { return; } done = true; sp.remove(); }
+    var t = setTimeout(end, 18600);
+    sp.addEventListener('click', function () { clack(true); clearTimeout(t); end(); });
+  })();
+
+  render();
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
+  }
+})();
+</script>
+</body>
+</html>
