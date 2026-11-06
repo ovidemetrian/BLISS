@@ -1,0 +1,15 @@
+{
+  "name": "BLISS — AI Without the Box",
+  "short_name": "BLISS",
+  "description": "A phone AI interface concept: three thirds, typewriter keys, one chair for any AI.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#07080C",
+  "theme_color": "#07080C",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icon-maskable.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}
