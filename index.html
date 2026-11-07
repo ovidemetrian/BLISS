@@ -112,7 +112,12 @@ button{font:inherit;color:inherit}
 .s-caret{animation:blink .8s step-end infinite}
 .s-caret-gone{animation:blink .8s step-end infinite,sGoldOut .1s linear 5s both}
 .s-skip{opacity:0;animation:sIn 1s ease-out 1.5s both}
-@media (prefers-reduced-motion: reduce){.flow,.talk,.rimflow,.bliss,.sp-idle,.sp-think,.wrap-think,.bar,.turning,.s-code{animation:none!important}}
+@keyframes sealGlow{0%,100%{opacity:.55}50%{opacity:1}}
+#ggiHalo{transition:stroke .4s,opacity .4s}
+#ggiHalo.kept{animation:sealGlow 2.4s ease-in-out infinite}
+.seal-row{display:flex;gap:12px;align-items:flex-start;margin:0 0 10px}
+.seal-ok{flex:none;width:22px;height:22px;border-radius:50%;border:1.5px solid #3FBF6A;display:flex;align-items:center;justify-content:center;margin-top:2px}
+@media (prefers-reduced-motion: reduce){#ggiHalo,.flow,.talk,.rimflow,.bliss,.sp-idle,.sp-think,.wrap-think,.bar,.turning,.s-code{animation:none!important}}
 </style>
 </head>
 <body>
@@ -153,6 +158,7 @@ button{font:inherit;color:inherit}
 <!-- my ring -->
 <button id="ring" class="ai" aria-label="Speak the answer. Hold to choose your AI." style="-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;touch-action:none;position:absolute;z-index:3;left:calc(50% - 28px);top:calc(33.29% - 28px);width:56px;height:56px;border-radius:50%;border:none;cursor:pointer;background:#07080C;box-shadow:0 0 14px rgba(61,123,255,.35);padding:0;display:flex;align-items:center;justify-content:center">
 <svg width="56" height="56" viewBox="0 0 68 68" aria-hidden="true">
+<circle id="ggiHalo" cx="34" cy="34" r="33" fill="none" stroke="#2A3040" stroke-width="1.5" opacity=".55"/>
 <g id="ringArcs">
 <circle cx="34" cy="34" r="30" fill="none" stroke="#FF4D4D" stroke-width="5" stroke-linecap="round" stroke-dasharray="50 138.5" stroke-dashoffset="0"/>
 <circle cx="34" cy="34" r="30" fill="none" stroke="#FFC93C" stroke-width="5" stroke-linecap="round" stroke-dasharray="50 138.5" stroke-dashoffset="-62.8"/>
@@ -229,6 +235,15 @@ button{font:inherit;color:inherit}
 <p style="margin:0 0 16px">You cannot fix a broken flow with nicer pixels. And a perfect flow still fails if the buttons are too small, the text too faint, or the important thing hidden.</p>
 <p style="margin:0 0 16px">After launch, the two stop being a line and become a loop. People touch the UI, you watch where they stumble, and what you learn becomes the next round of UX.</p>
 <p style="margin:0">This screen is that idea in practice: a short answer up top that never scrolls, and the whole story only when you ask for it.</p>
+<div id="ggiSeal" role="group" aria-label="GGI seal: how this answer kept the Ten Laws" style="margin:28px 0 0;padding:18px 18px 8px;border:1px solid #3FBF6A;border-radius:14px;background:#0C1610">
+<p class="bliss" style="margin:0 0 4px;font:700 15px 'Space Grotesk',sans-serif;letter-spacing:5px">GGI SEAL</p>
+<p style="margin:0 0 14px;font:400 14px/1.5 Inter,sans-serif;color:#A9ADBA">Whoever sits in the ring, the house rules stay the same.</p>
+<div class="seal-row"><span class="seal-ok" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#3FBF6A" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span style="font:400 15px/1.5 Inter,sans-serif"><b style="color:#FFF8E6">Source shown</b> · Law 9<br><span style="color:#A9ADBA">Common UX practice, e.g. the Nielsen Norman Group.</span></span></div>
+<div class="seal-row"><span class="seal-ok" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#3FBF6A" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span style="font:400 15px/1.5 Inter,sans-serif"><b style="color:#FFF8E6">Doubt stated</b> · Law 9<br><span style="color:#A9ADBA">The 1%: some teams treat UX and UI as one job, not two.</span></span></div>
+<div class="seal-row"><span class="seal-ok" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#3FBF6A" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span style="font:400 15px/1.5 Inter,sans-serif"><b style="color:#FFF8E6">No fluff</b> · Laws 1 and 5<br><span style="color:#A9ADBA">Short first, the long version only when asked.</span></span></div>
+<div class="seal-row"><span class="seal-ok" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#3FBF6A" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span style="font:400 15px/1.5 Inter,sans-serif"><b style="color:#FFF8E6">No tricks</b> · Law 10<br><span style="color:#A9ADBA">No dark patterns, nothing harvested from your question.</span></span></div>
+<p style="margin:6px 0 10px;font:400 13px/1.5 Inter,sans-serif;color:#8D92A1">Concept: the seal shows here what a connected AI would have to prove.</p>
+</div>
 </div></div>
 </section>
 
@@ -258,6 +273,8 @@ button{font:inherit;color:inherit}
 <p style="margin:0 0 16px">Typewriter keys. The chips add intent: <b>Explain</b>, <b>Compare</b>, <b>Do it</b>, and <b>Are you sure?</b> to make me double-check. Double-tap space for a full stop. The keyboard icon switches to your phone’s own keyboard.</p>
 <h2 class="h2" style="color:#E9E6DE">THE RING</h2>
 <p style="margin:0 0 16px">The red, yellow and blue ring between the two pieces is my voice. Tap it and I read the answer aloud; the top piece pulses while I speak. Hold it to choose which AI answers, or drag it and watch it float home.</p>
+<h2 class="h2" style="color:#3FBF6A">THE SEAL</h2>
+<p style="margin:0 0 16px">A thin green halo lights around the ring when an answer keeps the Ten Laws: source shown, doubt stated, no fluff, no tricks. Open the answer full screen to read the seal. Any AI can sit in the ring; the house rules travel with the seat.</p>
 <h2 class="h2" style="color:#E9E6DE">GO FULL SCREEN</h2>
 <p style="margin:0">Each piece has a nose on its side and an arc in its corner. Tap either: the answer opens from the right to read in full; your question opens from the left to write as much as you like. The back arrow returns.</p>
 <div style="margin:26px 0 0;padding-top:20px;border-top:1px solid #3A2E14">
@@ -280,7 +297,7 @@ button{font:inherit;color:inherit}
 <div class="phead"><span class="bliss" style="font:700 16px 'Space Grotesk',sans-serif;letter-spacing:5px">CHOOSE YOUR AI</span>
 <button class="round48" data-act="close" aria-label="Close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F4F2EC" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
 <div class="scroll" style="padding:14px 14px 24px;display:flex;flex-direction:column;gap:10px">
-<p style="margin:2px 8px 6px;font:400 15px/1.5 Inter,sans-serif;color:#A9ADBA">Same screen, any brain. Pick who answers in the centre ring.</p>
+<p style="margin:2px 8px 6px;font:400 15px/1.5 Inter,sans-serif;color:#A9ADBA">Same screen, any brain. Pick who answers in the centre ring.<br><span style="color:#3FBF6A">Every AI here sits under the same Ten Laws.</span></p>
 <div id="aiList" style="display:flex;flex-direction:column;gap:10px"></div>
 <div id="apiCard" style="border-radius:14px;border:1px solid #2A3040;overflow:hidden">
 <button data-act="toggleApi" id="apiToggle" aria-expanded="false" style="width:100%;min-height:68px;display:flex;align-items:center;gap:14px;padding:10px 16px;border:none;background:transparent;cursor:pointer;text-align:left;color:#F4F2EC">
@@ -553,10 +570,13 @@ button{font:inherit;color:inherit}
     if (!native && $('nativeAsk').value !== S.text) { $('nativeAsk').value = S.text; }
     var sig = (S.num ? 'n' : 'l') + (S.shift ? 'S' : 's');
     if (sig !== lastKeysSig) { renderKeys(); lastKeysSig = sig; }
-    ring.setAttribute('aria-label', S.speaking ? 'Stop speaking' : 'Speak the answer. Hold to choose your AI.');
+    ring.setAttribute('aria-label', (S.speaking ? 'Stop speaking' : 'Speak the answer. Hold to choose your AI.') + (S.phase === 'answered' ? ' GGI seal kept.' : ''));
     ring.setAttribute('aria-pressed', S.speaking ? 'true' : 'false');
-    ring.style.boxShadow = S.speaking ? '0 0 24px rgba(255,201,60,.75)' : '0 0 14px rgba(61,123,255,.35)';
+    ring.style.boxShadow = S.speaking ? '0 0 24px rgba(255,201,60,.75)' : (S.phase === 'answered' ? '0 0 0 2px rgba(63,191,106,.85), 0 0 18px rgba(63,191,106,.45)' : '0 0 14px rgba(61,123,255,.35)');
     $('ringArcs').setAttribute('class', S.speaking ? 'turning' : '');
+    var kept = S.phase === 'answered';
+    $('ggiHalo').setAttribute('stroke', kept ? '#3FBF6A' : '#2A3040');
+    $('ggiHalo').setAttribute('class', kept ? 'kept' : '');
     $('spark').setAttribute('class', 'sp ' + (S.phase === 'thinking' ? 'sp-think' : 'sp-idle'));
     $('spark').setAttribute('fill', S.phase === 'thinking' ? '#FFE08A' : '#F4F2EC');
     $('sparkWrap').setAttribute('class', S.speaking ? 'off' : (S.phase === 'thinking' ? 'wrap-think' : 'on'));
