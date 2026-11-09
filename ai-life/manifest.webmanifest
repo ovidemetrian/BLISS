@@ -1,0 +1,10 @@
+{
+  "id": "./",
+  "name": "AI LIFE BY PROMPT · BLISS",
+  "short_name": "AI LIFE",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#111317",
+  "theme_color": "#111317"
+}
