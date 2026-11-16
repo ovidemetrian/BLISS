@@ -1,0 +1,22 @@
+# BLISS: AI Without the Box
+
+> A phone interface concept for talking to AI that is not a chat box. Concept and UX by Ovi Demetrian, built with Claude. Installable PWA; concept prototype with sample answers.
+
+## The design
+- One screen, three equal thirds: the answer on top, the question in the middle, the keys at the bottom. Nothing scrolls until you ask.
+- Two interlocking pieces: answer and question are the same shape, one turned upside down, locked together.
+- One chair: the ring where they meet is the AI's voice. Tap to hear, hold to choose which AI sits there. The interface stays the user's; the intelligence is swappable.
+- Typewriter keys with intent chips: Explain, Compare, Do it, Are you sure?
+- Full screen on demand for long answers or long questions.
+
+## Why it matters
+Most AI apps share one pattern: a text box and scrolling bubbles. BLISS treats the AI conversation as a designed instrument, from a designer who has spent 20+ years watching people use control panels in real homes and rooms.
+
+## Designer
+Ovi Demetrian, hardware-aware interface designer, Phoenix, Arizona. He sets the UX; Claude builds the UI to his spec.
+
+## Links
+- Live app: https://ovidemetrian.github.io/BLISS/
+- Source and README: https://github.com/ovidemetrian/BLISS
+- Portfolio: https://ovidemetrian.github.io/portfolio/
+- Contact: ovidemetrian@gmail.com
