@@ -1,5 +1,5 @@
 // BLISS service worker: app shell cached for offline, fonts cached as they load.
-const VERSION = 'bliss-v3';
+const VERSION = 'bliss-v4';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icon.svg', './icon-maskable.svg'];
 
 self.addEventListener('install', (e) => {
