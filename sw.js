@@ -1,5 +1,5 @@
 // BLISS service worker: app shell cached for offline, fonts cached as they load.
-const VERSION = 'bliss-v4';
+const VERSION = 'bliss-v5';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icon.svg', './icon-maskable.svg'];
 
 self.addEventListener('install', (e) => {
@@ -29,8 +29,18 @@ self.addEventListener('fetch', (e) => {
     return;
   }
 
-  // Google Fonts and own files: cache first, fill the cache on first use.
-  if (url.origin === location.origin || url.hostname.endsWith('fonts.googleapis.com') || url.hostname.endsWith('fonts.gstatic.com')) {
+  // Own files (icons, manifest, scripts): network first, so a new upload always wins; cache only when offline.
+  if (url.origin === location.origin) {
+    e.respondWith(
+      fetch(req)
+        .then((res) => { if (res.ok) { const copy = res.clone(); caches.open(VERSION).then((c) => c.put(req, copy)); } return res; })
+        .catch(() => caches.match(req))
+    );
+    return;
+  }
+
+  // Google Fonts: cache first, fill the cache on first use.
+  if (url.hostname.endsWith('fonts.googleapis.com') || url.hostname.endsWith('fonts.gstatic.com')) {
     e.respondWith(
       caches.match(req).then((hit) => hit || fetch(req).then((res) => {
         const copy = res.clone();
