@@ -37,10 +37,10 @@ button{font:inherit;color:inherit}
 @keyframes carriage{0%{transform:translateX(0)}25%{transform:translateX(-10px)}55%{transform:translateX(6px)}80%{transform:translateX(-2px)}100%{transform:translateX(0)}}
 @keyframes ding{0%{transform:translate(-50%,10px) scale(.6);opacity:0}25%{transform:translate(-50%,0) scale(1.15);opacity:1}70%{opacity:1}100%{transform:translate(-50%,-18px) scale(1);opacity:0}}
 .flow{animation:rainbow 14s linear infinite}
-.idle{stroke:#E9E6DE}
+.idle{stroke:#3D7BFF}
 .talk{animation:rainbow 3s linear infinite;stroke-width:3}
 .pulsing{animation:glowpulse .9s ease-in-out infinite}
-.blueglow{filter:drop-shadow(0 0 8px rgba(61,123,255,.35))}
+.blueglow{filter:drop-shadow(0 0 8px rgba(255,138,61,.35))}
 .redglow{filter:drop-shadow(0 0 10px rgba(255,77,77,.55))}
 .swap{animation:rise .4s ease-out both}
 .dot{animation:dots 1.2s ease-in-out infinite}
@@ -125,13 +125,13 @@ button{font:inherit;color:inherit}
 
 <!-- my piece (answer) -->
 <svg id="ansSvg" class="layer" viewBox="0 0 390 562" preserveAspectRatio="none" aria-hidden="true">
-<path id="ansPath" class="idle" vector-effect="non-scaling-stroke" d="M14.5 2.5 H357.5 A12 12 0 0 1 369.5 14.5 V100 C376 108 387 118 387 124 C387 130 376 140 369.5 148 V233 A12 12 0 0 1 357.5 245 H128.5 A6 6 0 0 0 122.5 251 V305 A6 6 0 0 1 116.5 311 H8.5 A6 6 0 0 1 2.5 305 V14.5 A12 12 0 0 1 14.5 2.5 Z" fill="#0F121A" stroke="#2A3040" stroke-width="1"/>
+<path id="ansPath" class="idle" vector-effect="non-scaling-stroke" d="M14.5 2.5 H357.5 A12 12 0 0 1 369.5 14.5 V100 C376 108 387 118 387 124 C387 130 376 140 369.5 148 V233 A12 12 0 0 1 357.5 245 H128.5 A6 6 0 0 0 122.5 251 V305 A6 6 0 0 1 116.5 311 H8.5 A6 6 0 0 1 2.5 305 V14.5 A12 12 0 0 1 14.5 2.5 Z" fill="#0D1322" stroke="#2A3040" stroke-width="1"/>
 <path id="ansGrip" class="idle" vector-effect="non-scaling-stroke" d="M363.5 233 A6 6 0 0 1 357.5 239 M359.5 233 A2 2 0 0 1 357.5 235" fill="none" stroke="#8D92A1" stroke-width="1.5" stroke-linecap="round"/>
 </svg>
 <!-- your piece (question) -->
 <svg id="qSvg" class="layer blueglow" viewBox="0 0 390 562" preserveAspectRatio="none" aria-hidden="true">
-<path id="qPath" vector-effect="non-scaling-stroke" d="M375.5 559.5 H32.5 A12 12 0 0 1 20.5 547.5 V462 C14 454 3 444 3 438 C3 432 14 422 20.5 414 V329 A12 12 0 0 1 32.5 317 H261.5 A6 6 0 0 0 267.5 311 V257 A6 6 0 0 1 273.5 251 H381.5 A6 6 0 0 1 387.5 257 V547.5 A12 12 0 0 1 375.5 559.5 Z" fill="#0B0E15" stroke="#3D7BFF" stroke-width="1" style="transition:stroke .3s"/>
-<path id="qGrip" vector-effect="non-scaling-stroke" d="M26.5 547.5 A6 6 0 0 0 32.5 553.5 M30.5 547.5 A2 2 0 0 0 32.5 549.5" fill="none" stroke="#3D7BFF" stroke-width="1.5" stroke-linecap="round"/>
+<path id="qPath" vector-effect="non-scaling-stroke" d="M375.5 559.5 H32.5 A12 12 0 0 1 20.5 547.5 V462 C14 454 3 444 3 438 C3 432 14 422 20.5 414 V329 A12 12 0 0 1 32.5 317 H261.5 A6 6 0 0 0 267.5 311 V257 A6 6 0 0 1 273.5 251 H381.5 A6 6 0 0 1 387.5 257 V547.5 A12 12 0 0 1 375.5 559.5 Z" fill="#170F0A" stroke="#3D7BFF" stroke-width="1" style="transition:stroke .3s"/>
+<path id="qGrip" vector-effect="non-scaling-stroke" d="M26.5 547.5 A6 6 0 0 0 32.5 553.5 M30.5 547.5 A2 2 0 0 0 32.5 549.5" fill="none" stroke="#FF8A3D" stroke-width="1.5" stroke-linecap="round"/>
 </svg>
 
 <section aria-label="Answer" aria-live="polite" style="position:absolute;left:.77%;top:.36%;width:93.85%;height:28.55%;overflow:hidden">
@@ -249,7 +249,7 @@ button{font:inherit;color:inherit}
 
 <!-- full question -->
 <section id="fullQuestion" class="overlay hide" aria-label="Your question, full screen" style="bottom:auto;height:calc(66.588% + 1px)">
-<div class="panel" id="fqPanel" style="border:1px solid #3D7BFF;background:#0B0E15;box-shadow:0 0 22px rgba(61,123,255,.25)">
+<div class="panel" id="fqPanel" style="border:1px solid #FF8A3D;background:#170F0A;box-shadow:0 0 22px rgba(255,138,61,.25)">
 <div class="phead" style="padding:8px 22px 8px 8px">
 <button class="round48" data-act="close" aria-label="Close full screen"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F4F2EC" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
 <span style="font:500 13px 'Space Grotesk',sans-serif;letter-spacing:6px;color:#8D92A1">YOUR QUESTION</span></div>
@@ -268,7 +268,7 @@ button{font:inherit;color:inherit}
 <h2 class="h2" style="color:#FFC93C">TOP · THE ANSWER</h2>
 <p style="margin:0 0 16px">The answer lands here, short. White outline means ready. A slow rainbow means there’s an answer. Tap <b>Short</b> to cycle Short · Medium · Deep.</p>
 <h2 class="h2" style="color:#6E9BFF">MIDDLE · YOUR QUESTION</h2>
-<p style="margin:0 0 16px">What you type or say shows up here. Blue means typing; red means listening. Tap <b>Talk</b> to speak, and again to stop.</p>
+<p style="margin:0 0 16px">What you type or say shows up here. Orange is you typing; red means listening. Blue is the AI. Tap <b>Talk</b> to speak, and again to stop.</p>
 <h2 class="h2" style="color:#FF7A70">BOTTOM · THE KEYS</h2>
 <p style="margin:0 0 16px">Typewriter keys. The chips add intent: <b>Explain</b>, <b>Compare</b>, <b>Do it</b>, and <b>Are you sure?</b> to make me double-check. Double-tap space for a full stop. The keyboard icon switches to your phone’s own keyboard.</p>
 <h2 class="h2" style="color:#E9E6DE">THE RING</h2>
@@ -549,7 +549,7 @@ button{font:inherit;color:inherit}
     var ansCls = S.speaking ? 'talk' : (active ? 'flow' : 'idle');
     $('ansPath').setAttribute('class', ansCls); $('ansGrip').setAttribute('class', ansCls);
     $('ansSvg').setAttribute('class', 'layer' + (S.speaking ? ' pulsing' : ''));
-    var qEdge = S.listening ? '#FF4D4D' : '#3D7BFF';
+    var qEdge = S.listening ? '#FF4D4D' : '#FF8A3D';
     $('qSvg').setAttribute('class', 'layer ' + (S.listening ? 'redglow' : 'blueglow'));
     $('qPath').setAttribute('stroke', qEdge); $('qGrip').setAttribute('stroke', qEdge);
     vis('waiting', S.phase === 'waiting'); vis('thinking', S.phase === 'thinking'); vis('answer', S.phase === 'answered');
