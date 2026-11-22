@@ -381,14 +381,14 @@ button{font:inherit;color:inherit}
   }
   function clack(big) {
     /* a tiny tick: 3 ms, bright, quiet, plus a short buzz on phones that vibrate */
-    try { if (navigator.vibrate) { navigator.vibrate(big ? 12 : 8); } } catch (e) {}
+    try { if (navigator.vibrate) { navigator.vibrate(big ? 4 : 3); } } catch (e) {}
     try {
       var a = audio(); if (!a) { return; }
       var sr = a.sampleRate, n = Math.floor(sr * 0.003), b = a.createBuffer(1, n, sr), d = b.getChannelData(0);
       for (var i = 0; i < n; i++) { d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / n, 5); }
       var s = a.createBufferSource(); s.buffer = b;
       var hp = a.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 4000;
-      var g = a.createGain(); g.gain.value = big ? 0.16 : 0.13;
+      var g = a.createGain(); g.gain.value = big ? 0.32 : 0.26;
       s.connect(hp); hp.connect(g); g.connect(a.destination); s.start(a.currentTime);
     } catch (e) {}
   }
