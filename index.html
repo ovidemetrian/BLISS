@@ -380,26 +380,23 @@ button{font:inherit;color:inherit}
     return ac;
   }
   function clack(big) {
+    /* a tiny tick: 3 ms, bright, quiet, plus a short buzz on phones that vibrate */
+    try { if (navigator.vibrate) { navigator.vibrate(big ? 12 : 8); } } catch (e) {}
     try {
       var a = audio(); if (!a) { return; }
-      var t = a.currentTime, len = Math.floor(a.sampleRate * 0.045);
-      var buf = a.createBuffer(1, len, a.sampleRate), d = buf.getChannelData(0);
-      for (var i = 0; i < len; i++) { d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 4); }
-      var src = a.createBufferSource(); src.buffer = buf;
-      var bp = a.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = big ? 900 : 1800; bp.Q.value = 1.2;
-      var g = a.createGain(); g.gain.value = big ? 0.4 : 0.3;
-      src.connect(bp); bp.connect(g); g.connect(a.destination); src.start(t);
-      var o = a.createOscillator(), og = a.createGain();
-      o.frequency.setValueAtTime(big ? 140 : 220, t); o.frequency.exponentialRampToValueAtTime(60, t + 0.05);
-      og.gain.setValueAtTime(0.15, t); og.gain.exponentialRampToValueAtTime(0.0001, t + 0.06);
-      o.connect(og); og.connect(a.destination); o.start(t); o.stop(t + 0.07);
+      var sr = a.sampleRate, n = Math.floor(sr * 0.003), b = a.createBuffer(1, n, sr), d = b.getChannelData(0);
+      for (var i = 0; i < n; i++) { d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / n, 5); }
+      var s = a.createBufferSource(); s.buffer = b;
+      var hp = a.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 4000;
+      var g = a.createGain(); g.gain.value = big ? 0.16 : 0.13;
+      s.connect(hp); hp.connect(g); g.connect(a.destination); s.start(a.currentTime);
     } catch (e) {}
   }
   function bell() {
     try {
       var a = audio(); if (!a) { return; }
       var t = a.currentTime + 0.02;
-      [2093, 3136, 4186].forEach(function (f, i) {
+      [3520, 5274, 7040].forEach(function (f, i) {
         var o = a.createOscillator(), g = a.createGain();
         o.type = 'sine'; o.frequency.value = f;
         g.gain.setValueAtTime(0.0001, t);
